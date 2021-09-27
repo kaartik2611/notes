@@ -28,25 +28,25 @@ export const Register = () => {
 
   return (
     <div>
-      <p className="text-center text-3xl">Register Form</p>
+      <p className="text-center text-5xl mt-10">Register Form</p>
       <form action="" onSubmit={register}>
         {/* <p className="text-center text-red-600 text-xl">{error}</p> */}
-        <div className="mx-10 mt-12 flex flex-col space-y-5 border">
+        <div className="mx-10 mt-12 flex flex-col space-y-5 ">
           <input
             onChange={(e) => setUsername(e.target.value)}
             type="text"
             placeholder="username"
-            className="mx-auto w-80 px-2 py-1 sm:text-xl text-base focus:outline-none rounded-md border border-black"
+            className="mx-auto w-80 px-2 py-1 sm:text-xl text-base focus:outline-none rounded-md border text-black"
           />
           <input
             onChange={(e) => setPassword(e.target.value)}
             type="password"
             placeholder="password"
-            className="mx-auto w-80 px-2 py-1 sm:text-xl text-base focus:outline-none rounded-md border border-black"
+            className="mx-auto w-80 px-2 py-1 sm:text-xl text-base focus:outline-none rounded-md border text-black"
           />
           <button
             type="submit"
-            className="mx-auto w-40 px-2 py-1 rounded-md border border-black hover:text-white hover:bg-gray-800 transition delay-75 "
+            className="mx-auto w-40 px-2 py-1 rounded-md border hover:bg-white hover:text-black transition delay-75 "
           >
             Register
           </button>

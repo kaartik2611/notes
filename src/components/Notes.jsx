@@ -42,16 +42,16 @@ export const Notes = () => {
   }, [notes])
   return (
     <div>
-      <p className="text-center text-3xl">Add Your Notes</p>
+      <p className="text-center text-5xl mt-8 mb-10">Add Your Notes</p>
       <form className="space-x-4 flex justify-center my-6" onSubmit={addNote}>
-        <input type="text" name="title" placeholder="Enter Title" className="p-2 border-black border-2" ref={title} />
-        <input type="text" name="description" placeholder="Enter Body" className="p-2 border-black border-2" ref={description} />
-        <button type="submit" className="border-2 border-black p-2">Add Note</button>
+        <input type="text" name="title" placeholder="Enter Title" className="p-2  rounded text-black" ref={title} />
+        <input type="text" name="description" placeholder="Enter Body" className="p-2  rounded text-black " ref={description} />
+        <button type="submit" className="border-2  p-2 hover:bg-white hover:text-black transition">Add Note</button>
       </form>
       <div className="grid grid-cols-4 gap-2">
         {notes.map((note) => (
           <Fragment className="flex flex-col">
-            <div className="border-2 border-black rounded-md overflow-ellipsis" key={note.id} >
+            <div className="border-2 rounded-md overflow-ellipsis" key={note.id} >
               <p className="text-center text-xl pt-1 truncate overflow-ellipsis overflow-hidden ...">{note.title}</p>
               <div className="">
                 <p className="text-center text-md">{note.description}</p>
@@ -60,7 +60,7 @@ export const Notes = () => {
                 className="flex flex-row justify-around my-2">
                 <button
                   type='button'
-                  className="border-2 p-2 border-black">View</button>
+                  className="border-2 p-2 ">View</button>
                 <div id={note.id} onClick={deleteNote}>
                   <svg
                     version="1.0"
