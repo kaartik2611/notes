@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
+import axios from 'axios';
 
 export const Todo = () => {
+  const token = localStorage.getItem("token")
   const [todos, setTodos] = useState([])
   const text = useRef()
   const formSubmit = e => {
@@ -10,30 +12,64 @@ export const Todo = () => {
     }
     else {
       const newTodo = [...todos, {
-        id: Math.random(),
+        key: Math.random(),
         todo: text.current.value,
         isCompleted: false,
       }];
       setTodos(newTodo)
+      console.log("hello");
+      postTodo(newTodo)
       text.current.value = ''
-      localStorage.setItem("todos", JSON.stringify(newTodo))
+      // localStorage.setItem("todos", JSON.stringify(newTodo))
     }
   }
+
+  const postTodo = (todos) => {
+    console.log(todos);
+    axios.post("http://localhost:4000/api/todos", todos, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      }
+    })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+  // useEffect(() => {
+  //   postTodo(todos)
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [todos])
+
   useEffect(() => {
-    const localTodos = localStorage.getItem("todos");
-    console.log(localTodos);
-    setTodos(!localTodos ? '' : JSON.parse(localTodos))
+    axios.get("http://localhost:4000/api/todos", {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      }
+    })
+      .then(res => {
+        console.log(res);
+        setTodos(res.data.todos)
+      })
+      .catch(err => {
+        console.log(err);
+      })
   }, [])
 
   const deleteTodo = e => {
     const del = e.currentTarget.id;
-    setTodos(todos.filter((todo) => todo.id !== parseFloat(del)))
+    setTodos(todos.filter((todo) => todo.key !== parseFloat(del)));
+    postTodo(todos)
   }
   const completeTodo = e => {
     const complete = e.currentTarget.id;
     setTodos(
       todos.map((todo) => {
-        if (todo.id === parseFloat(complete)) {
+        if (todo.key === parseFloat(complete)) {
           return {
             ...todo,
             isCompleted: !todo.isCompleted,
@@ -42,10 +78,8 @@ export const Todo = () => {
         return todo;
       })
     );
+    postTodo(todos)
   }
-  useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos))
-  }, [todos])
 
   const textHandler = (e) =>
     e.isCompleted === false ? "no-underline" : "line-through";
@@ -64,15 +98,15 @@ export const Todo = () => {
           {todos.map((todo, i) => (
             <div
               className="flex flex-row border my-2 text-2xl"
-              key={todo.id}>
+              key={todo.key}>
               <p>{i + 1}</p>
               <p className={"text-center flex-grow " + textHandler(todo)}>{todo.todo}</p>
-              <div id={todo.id} onClick={deleteTodo}>
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 m-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
+              <div id={todo.key} onClick={deleteTodo}>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 m-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
               </div>
-              <div id={todo.id} onClick={completeTodo}>
+              <div id={todo.key} onClick={completeTodo}>
                 <img alt="complete" src={iconHandler(todo)} />
               </div>
             </div>

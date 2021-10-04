@@ -1,24 +1,38 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Link, useHistory } from "react-router-dom"
+import axios from 'axios';
 
 export const Header = () => {
+  const [user, setUser] = useState(localStorage.getItem("user"))
+  // const userName = localStorage.getItem("user")
+  const token = localStorage.getItem("token")
+  const history = useHistory()
+
+  const logOut = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    history.push('/login')
+  }
   return (
     <div className="flex flex-row">
       <div>
         <p className="text-5xl m-2">Notion</p>
       </div>
       <div className="flex flex-grow space-x-6 justify-center">
-        <p className="my-4 text-xl hover:text-gray-300 cursor-pointer">Blogs</p>
-        <p className="my-4 text-xl hover:text-gray-300 cursor-pointer">TODOs</p>
-        <p className="my-4 text-xl hover:text-gray-300 cursor-pointer">Notes</p>
+        <Link to="/blogs" className="my-4 text-xl hover:text-gray-300 cursor-pointer">Blogs</Link>
+        <Link to="/todo" className="my-4 text-xl hover:text-gray-300 cursor-pointer">TODOs</Link>
+        <Link to="/notes" className="my-4 text-xl hover:text-gray-300 cursor-pointer">Notes</Link>
       </div>
-      <div>
-        <a href="##">
+      {!user ? <div>
+        <Link to="/login">
           <button className="text-xl px-3 py-1 rounded-md border-2 m-3 hover:bg-white hover:text-black transition">Login</button>
-        </a>
-        <a href="##">
+        </Link>
+        <Link to="/register">
           <button className="text-xl px-3 py-1 rounded-md border-2 hover:bg-white hover:text-black transition">Sign Up</button>
-        </a>
-      </div>
+        </Link>
+      </div> : <Link to="/#">
+        <button className="text-xl px-3 py-1 rounded-md border-2 m-3 hover:bg-white hover:text-black transition" onClick={logOut}>LogOut</button>
+      </Link>}
     </div>
   )
 }
