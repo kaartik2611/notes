@@ -89,21 +89,21 @@ export const Notes = () => {
         <input type="text" name="description" placeholder="Enter Body" className="p-2  rounded text-black " ref={description} />
         <button type="submit" className="border-2  p-2 hover:bg-white hover:text-black transition">Add Note</button>
       </form>
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 p-6">
         {notes.map((note) => (
           <div className="flex flex-col">
             <div className={note.viewed ? " border-2 rounded-md overflow-ellipsis border-green-400" : 'border-2 rounded-md overflow-ellipsis border-black'} key={note.key} >
-              <p className="text-center text-xl pt-1 truncate overflow-ellipsis overflow-hidden ...">{note.title}</p>
+              <p className="text-center text-xl py-2 truncate overflow-ellipsis overflow-hidden ..."> TITLE : {note.title}</p>
               <div className="">
-                <p className="text-center text-md">{note.description}</p>
+                <p className="text-center text-md">CONTENT :  {note.description}</p>
               </div>
               <div
-                className="flex flex-row justify-around my-2">
+                className="flex flex-row justify-center my-2">
                 <button
                   id={note.key}
                   onClick={viewNote}
                   type='button'
-                  className="border-2 p-2 ">{note.viewed ? "viewed" : "view"}</button>
+                  className="border-2 p-2 mr-10 ">{note.viewed ? "viewed" : "view"}</button>
                 <div id={note.key} onClick={deleteNote}>
                   <svg
                     version="1.0"

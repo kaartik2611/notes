@@ -13,7 +13,7 @@ export const Header = () => {
   return (
     <div className="flex flex-row">
       <div>
-        <p className="text-5xl m-2">Notion</p>
+        <Link to="/" className="text-5xl m-2 hover:text-gray-300 cursor-pointer">Notion</Link>
       </div>
       <div className="flex flex-grow space-x-6 justify-center">
         <Link to="/blogs" className="my-4 text-xl hover:text-gray-300 cursor-pointer">Blogs</Link>
