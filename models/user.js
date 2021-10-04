@@ -15,6 +15,24 @@ const todoSchema = new Schema({
     default: false,
   }
 })
+const noteSchema = new Schema({
+  key: {
+    type: Number,
+    required: true
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  viewed: {
+    type: Boolean,
+    default: false,
+  }
+})
 
 const userSchema = new Schema({
   username: {
@@ -26,7 +44,8 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  todos: [todoSchema]
+  todos: [todoSchema],
+  notes: [noteSchema]
 },
   { timestamps: true },
   { collection: 'users' }

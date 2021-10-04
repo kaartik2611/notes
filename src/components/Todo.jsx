@@ -17,7 +17,6 @@ export const Todo = () => {
         isCompleted: false,
       }];
       setTodos(newTodo)
-      console.log("hello");
       postTodo(newTodo)
       text.current.value = ''
       // localStorage.setItem("todos", JSON.stringify(newTodo))
@@ -25,7 +24,6 @@ export const Todo = () => {
   }
 
   const postTodo = (todos) => {
-    console.log(todos);
     axios.post("http://localhost:4000/api/todos", todos, {
       headers: {
         "Content-Type": "application/json",
@@ -39,10 +37,6 @@ export const Todo = () => {
         console.log(err);
       })
   }
-  // useEffect(() => {
-  //   postTodo(todos)
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [todos])
 
   useEffect(() => {
     axios.get("http://localhost:4000/api/todos", {
@@ -58,27 +52,29 @@ export const Todo = () => {
       .catch(err => {
         console.log(err);
       })
-  }, [])
+  }, [token])
 
   const deleteTodo = e => {
     const del = e.currentTarget.id;
-    setTodos(todos.filter((todo) => todo.key !== parseFloat(del)));
-    postTodo(todos)
+    const newTodos = todos.filter((todo) => todo.key !== parseFloat(del))
+    setTodos(newTodos);
+    postTodo(newTodos)
   }
   const completeTodo = e => {
     const complete = e.currentTarget.id;
+    const newTodos = todos.map((todo) => {
+      if (todo.key === parseFloat(complete)) {
+        return {
+          ...todo,
+          isCompleted: !todo.isCompleted,
+        };
+      }
+      return todo;
+    })
     setTodos(
-      todos.map((todo) => {
-        if (todo.key === parseFloat(complete)) {
-          return {
-            ...todo,
-            isCompleted: !todo.isCompleted,
-          };
-        }
-        return todo;
-      })
+      newTodos
     );
-    postTodo(todos)
+    postTodo(newTodos)
   }
 
   const textHandler = (e) =>

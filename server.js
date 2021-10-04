@@ -55,7 +55,7 @@ app.post("/api/login", async (req, res) => {
 
   if (await bcrypt.compare(password, user.password)) {
     const token = jwt.sign({ id: user._id, username: user.username }, process.env.jwtSECRET, { expiresIn: '24h' })
-    return res.send({ status: 'ok', data: token , user:username })
+    return res.send({ status: 'ok', data: token, user: username })
   }
   res.send({ status: 'error', error: " Invalid username/Password" })
 })
@@ -77,19 +77,30 @@ app.post("/api/todos", authCheck, async (req, res) => {
   console.log(todos);
   const { id } = req.jwt
   const user = await User.findByIdAndUpdate(id, { "todos": todos })
-  // console.log(user);
 })
 app.get("/api/todos", authCheck, async (req, res) => {
   const { id } = req.jwt
   const user = await User.findById(id)
   log(user)
   res.send({
-    status: "ok", todos: user.todos })
+    status: "ok", todos: user.todos
+  })
 })
 
-// app.get("/api/logout", , async (req, res) => {
-  
-// })
+app.post("/api/notes", authCheck, async (req, res) => {
+  const notes = req.body
+  console.log(notes);
+  const { id } = req.jwt
+  const user = await User.findByIdAndUpdate(id, { "notes": notes })
+})
+app.get("/api/notes", authCheck, async (req, res) => {
+  const { id } = req.jwt
+  const user = await User.findById(id)
+  log(user)
+  res.send({
+    status: "ok", notes: user.notes
+  })
+})
 
 app.listen(port, () => {
   console.log(`express app listening at http://localhost:${port}`);

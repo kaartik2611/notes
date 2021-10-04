@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, Fragment } from 'react'
-// import { Dialog, Transition } from '@headlessui/react'
+import React, { useState, useEffect, useRef } from 'react'
+import axios from 'axios';
 
 export const Notes = () => {
-
+  const token = localStorage.getItem("token")
   const [notes, setNotes] = useState([])
   const title = useRef()
   const description = useRef()
@@ -16,30 +16,71 @@ export const Notes = () => {
     }
     else {
       const newNote = [...notes, {
-        id: Math.random(),
+        key: Math.random(),
         title: title.current.value,
         description: description.current.value,
+        viewed: false
       }]
       setNotes(newNote)
+      postNotes(newNote)
+      console.log(newNote);
       title.current.value = ''
       description.current.value = ''
-      localStorage.setItem("notes", JSON.stringify(newNote))
     }
   }
   useEffect(() => {
-    const localNotes = localStorage.getItem("notes");
-    console.log(localNotes);
-    setNotes(!localNotes ? '' : JSON.parse(localNotes))
-  }, [])
+    axios.get("http://localhost:4000/api/notes", {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      }
+    })
+      .then(res => {
+        console.log(res);
+        setNotes(res.data.notes)
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }, [token])
+
+  const postNotes = (notes) => {
+    axios.post("http://localhost:4000/api/notes", notes, {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      }
+    })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        console.log(err);
+      })
+  }
+
+  const viewNote = e => {
+    const view = e.currentTarget.id;
+    const newNote = notes.map((note) => {
+      if (note.key === parseFloat(view)) {
+        return {
+          ...note,
+          viewed: !note.viewed,
+        };
+      }
+      return note;
+    })
+    console.log(newNote)
+    setNotes(newNote);
+    postNotes(newNote)
+  }
 
   const deleteNote = e => {
     const del = e.currentTarget.id;
-    setNotes(notes.filter((todo) => todo.id !== parseFloat(del)))
+    const newNotes = notes.filter((todo) => todo.key !== parseFloat(del))
+    setNotes(newNotes)
+    postNotes(newNotes)
   }
-
-  useEffect(() => {
-    localStorage.setItem("notes", JSON.stringify(notes))
-  }, [notes])
   return (
     <div>
       <p className="text-center text-5xl mt-8 mb-10">Add Your Notes</p>
@@ -50,8 +91,8 @@ export const Notes = () => {
       </form>
       <div className="grid grid-cols-4 gap-2">
         {notes.map((note) => (
-          <Fragment className="flex flex-col">
-            <div className="border-2 rounded-md overflow-ellipsis" key={note.id} >
+          <div className="flex flex-col">
+            <div className={note.viewed ? " border-2 rounded-md overflow-ellipsis border-green-400" : 'border-2 rounded-md overflow-ellipsis border-black'} key={note.key} >
               <p className="text-center text-xl pt-1 truncate overflow-ellipsis overflow-hidden ...">{note.title}</p>
               <div className="">
                 <p className="text-center text-md">{note.description}</p>
@@ -59,9 +100,11 @@ export const Notes = () => {
               <div
                 className="flex flex-row justify-around my-2">
                 <button
+                  id={note.key}
+                  onClick={viewNote}
                   type='button'
-                  className="border-2 p-2 ">View</button>
-                <div id={note.id} onClick={deleteNote}>
+                  className="border-2 p-2 ">{note.viewed ? "viewed" : "view"}</button>
+                <div id={note.key} onClick={deleteNote}>
                   <svg
                     version="1.0"
                     xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +129,7 @@ export const Notes = () => {
                 </div>
               </div>
             </div>
-          </Fragment>
+          </div>
         ))}
       </div>
     </div>

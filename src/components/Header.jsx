@@ -1,11 +1,8 @@
 import React, { useState } from 'react'
 import { Link, useHistory } from "react-router-dom"
-import axios from 'axios';
 
 export const Header = () => {
-  const [user, setUser] = useState(localStorage.getItem("user"))
-  // const userName = localStorage.getItem("user")
-  const token = localStorage.getItem("token")
+  const [user,] = useState(localStorage.getItem("user"))
   const history = useHistory()
 
   const logOut = () => {
@@ -30,9 +27,13 @@ export const Header = () => {
         <Link to="/register">
           <button className="text-xl px-3 py-1 rounded-md border-2 hover:bg-white hover:text-black transition">Sign Up</button>
         </Link>
-      </div> : <Link to="/#">
-        <button className="text-xl px-3 py-1 rounded-md border-2 m-3 hover:bg-white hover:text-black transition" onClick={logOut}>LogOut</button>
-      </Link>}
+      </div> : <div>
+        Hello {user}
+        <Link to="/#">
+          <button className="text-xl px-3 py-1 rounded-md border-2 m-3 hover:bg-white hover:text-black transition" onClick={logOut}>LogOut</button>
+        </Link>
+      </div>
+      }
     </div>
   )
 }
